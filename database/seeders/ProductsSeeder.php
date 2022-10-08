@@ -17,12 +17,11 @@ class ProductsSeeder extends Seeder
      */
     public function run()
     {
-        $url = 'https://swapi.dev/api/starships';
+        $url = 'https://swapi.dev/api/starships/?page=4';
 
         $response = Http::get($url);
 
-        while ($response['next']) {
-            $response = Http::get($response['next']);
+        // while ($response['next']) {
 
             foreach ($response['results'] as $key => $value) {
                 Product::create([
@@ -41,6 +40,8 @@ class ProductsSeeder extends Seeder
                     'mglt' => $value['MGLT'],
                 ]);
             };
-        }
+
+            // $response = Http::get($response['next']);
+        // }
     }
 }
