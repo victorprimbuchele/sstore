@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
-    public function show()
+    public function show(Request $request)
     {
+        
+
         return DB::table('products')->paginate(15);
     }
 }
