@@ -21,5 +21,5 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/user/register', [UserController::class, 'edit']);
 
 // Product
-Route::get('/products', [ProductController::class, 'show']);
+Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{products:id}', [ProductController::class, 'show']);
