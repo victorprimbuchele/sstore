@@ -82,8 +82,6 @@ class Products extends Model
 
     public static function getDistinctManufacturer()
     {
-        Log::info(['passei por aqui']);
-
         return self::getDistinct(['manufacturer']);
     }
 

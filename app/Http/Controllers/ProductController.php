@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Products;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
@@ -50,8 +47,6 @@ class ProductController extends Controller
             Falha ao buscar o produto
             ', 422);
         }
-
-        // return Products::paginate(15);
     }
 
     public function getTypesOfQuery()
@@ -76,10 +71,7 @@ class ProductController extends Controller
             $queries = [
                 'filters' => $filters,
                 'searches' => $searches,
-                // 'orders' => $orders
             ];
-
-
 
             return response($queries, 200);
         } catch (Exception $e) {
@@ -90,14 +82,4 @@ class ProductController extends Controller
             ', 422);
         }
     }
-
-    // private function translateStarshipClass()
-    // {
-    //     $englishStarshipClasses = Products::getDistinctStarshipClass();
-
-
-
-    //     foreach ($englishStarshipClasses as $englishStarshipClass) {
-    //     };
-    // }
 }
