@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Products;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -11,26 +12,92 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
+    protected $dictStarshipClasses = [
+        'Armed government transport' => 'Transporte governamental armado',
+        'capital ship' => 'Nave capital',
+        'corvette' => 'Corvette',
+        'Deep Space Mobile Battlestation' => 'Estação de batalha móvel Deep Space',
+        'Diplomatic barge' => 'Barcaça espacial diplomática',
+        'Droid control ship' => 'Nave de controle dróide',
+        'Escort ship' => 'Nave de escolta',
+        'freighter' => 'Cargueiro',
+        'landing craft' => 'Embarcação de desembarque',
+        'Patrol craft' => 'Embarcação de patrulha',
+        'Star Cruiser' => 'Cruzador espacial',
+        'Star dreadnought' => 'Couraçado espacial',
+        'Star Destroyer' => 'Destruidor estelar',
+        'Starfighter' => 'Caça estelar',
+        'Transport' => 'Nave de transporte',
+        'yacht' => 'Iate estelar'
+    ];
+
     public function show(Request $request)
     {
 
 
-        return DB::table('products')->paginate(15);
+        return Products::paginate(15);
     }
 
 
-    public function index(Request $request)
+    public function index(Products $products)
     {
-        $keyword = $request['keyword'];
+        try {
+            return response($products, 200);
+        } catch (Exception $e) {
+            Log::error($e);
 
-        $search = $request[$keyword];
-
-        if ($keyword) {
-            return Products::where([
-                [$keyword, 'like', '%' . $search . '%']
-            ])->get();
+            return response('
+            Falha ao buscar o produto
+            ', 422);
         }
 
-        return DB::table('products')->paginate(15);
+        // return Products::paginate(15);
     }
+
+    public function getTypesOfQuery()
+    {
+        try {
+            $filters = [
+                'manufacturer' => Products::getDistinctManufacturer(),
+                'starship_class' => $this->dictStarshipClasses,
+            ];
+
+            $searches = [
+                'name',
+                'model'
+            ];
+
+            // $orders = [
+            //     'manufacturer',
+            //     'model',
+            //     'name'
+            // ];
+
+            $queries = [
+                'filters' => $filters,
+                'searches' => $searches,
+                // 'orders' => $orders
+            ];
+
+
+
+            return response($queries, 200);
+        } catch (Exception $e) {
+            Log::error($e);
+
+            return response('
+            Falha ao buscar os filtros
+            ', 422);
+        }
+    }
+
+    // private function translateStarshipClass()
+    // {
+    //     $englishStarshipClasses = Products::getDistinctStarshipClass();
+
+
+
+    //     foreach ($englishStarshipClasses as $englishStarshipClass) {
+    //     };
+    // }
 }

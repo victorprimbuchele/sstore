@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +22,9 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/user/register', [UserController::class, 'edit']);
 
 // Product
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{products:id}', [ProductController::class, 'show']);
+Route::get('/product/{products}', [ProductController::class, 'index']);
+Route::get('/products', [ProductController::class, 'show']);
+Route::get(
+    '/products/getTypesOfQuery',
+    [ProductController::class, 'getTypesOfQuery']
+);
