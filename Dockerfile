@@ -1,18 +1,12 @@
-FROM php:8.1-fpm-alpine
+FROM nextstage/php:8.1-fpm-apache
 
-RUN apk add --no-cache nginx wget
+ENV AUTORUN_ENABLED=false \
+    APACHE_DOCUMENT_ROOT=/var/www/html/public \
+    PHP_VERSION=8.1 \
+    AUTORUN_LARAVEL_STORAGE_LINK=false \
+    AUTORUN_LARAVEL_MIGRATION=false
 
-RUN mkdir -p /run/nginx
+COPY . /var/www/html
 
-COPY nginx.conf /etc/nginx/nginx.conf
-
-RUN mkdir -p /app
-COPY . /app
-
-RUN sh -c "wget http://getcomposer.org/composer.phar && chmod a+x composer.phar && mv composer.phar /usr/local/bin/composer"
-RUN cd /app && \
-    /usr/local/bin/composer install --no-dev
-
-RUN chown -R www-data: /app
-
-CMD sh /app/startup.sh
+RUN composer install -q --no-dev
+RUN chmod -R 777 /var/www/html/storage

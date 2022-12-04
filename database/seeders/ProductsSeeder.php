@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Products;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Log;
 
 class ProductsSeeder extends Seeder
 {
@@ -17,15 +16,18 @@ class ProductsSeeder extends Seeder
      */
     public function run()
     {
-        $url = 'https://swapi.dev/api/starships/?page=4';
+        $page = 1;
 
-        $response = Http::get($url);
+        $allStarshipsUrl = "https://www.swapi.tech/api/starships?page=1&limit=36";
 
-        // while ($response['next']) {
+        $allStarshipsResponse = Http::get($allStarshipsUrl);
 
-            foreach ($response['results'] as $key => $value) {
-                Product::create([
-                    'name' => $value['name'],
+        foreach ($allStarshipsResponse['results'] as $starship) {
+            $starshipData = Http::get($starship['url']);
+
+            foreach ($starshipData['result'] as $key => $value) {
+                if (gettype($value) === 'array') {
+                    Products::create([
                     'model' => $value['model'],
                     'passengers' => $value['passengers'],
                     'starship_class' => $value['starship_class'],
@@ -39,9 +41,9 @@ class ProductsSeeder extends Seeder
                     'cargo_capacity' => $value['cargo_capacity'],
                     'mglt' => $value['MGLT'],
                 ]);
-            };
-
-            // $response = Http::get($response['next']);
-        // }
+                }
+               
+            }
+        }
     }
 }

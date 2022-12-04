@@ -10,22 +10,22 @@ use Illuminate\Support\Facades\Log;
 class ProductController extends Controller
 {
     protected $dictStarshipClasses = [
-        'Armed government transport' => 'Transporte governamental armado',
-        'capital ship' => 'Nave capital',
-        'corvette' => 'Corvette',
+        'Assault ship' => 'Nave de assaulto',
+        'Capital ship' => 'Nave capital',
+        'Corvette' => 'Corvette',
+        'Cruiser' => 'Cruzador espacial',
         'Deep Space Mobile Battlestation' => 'Estação de batalha móvel Deep Space',
         'Diplomatic barge' => 'Barcaça espacial diplomática',
         'Droid control ship' => 'Nave de controle dróide',
         'Escort ship' => 'Nave de escolta',
-        'freighter' => 'Cargueiro',
-        'landing craft' => 'Embarcação de desembarque',
+        'Freighter' => 'Cargueiro',
+        'Landing craft' => 'Embarcação de desembarque',
         'Patrol craft' => 'Embarcação de patrulha',
-        'Star Cruiser' => 'Cruzador espacial',
+        'Star destroyer' => 'Destruidor estelar',
         'Star dreadnought' => 'Couraçado espacial',
-        'Star Destroyer' => 'Destruidor estelar',
         'Starfighter' => 'Caça estelar',
         'Transport' => 'Nave de transporte',
-        'yacht' => 'Iate estelar'
+        'Yacht' => 'Iate estelar'
     ];
 
     public function show(Request $request)
@@ -61,12 +61,6 @@ class ProductController extends Controller
                 'name',
                 'model'
             ];
-
-            // $orders = [
-            //     'manufacturer',
-            //     'model',
-            //     'name'
-            // ];
 
             $queries = [
                 'filters' => $filters,
