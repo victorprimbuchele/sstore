@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class Products extends Model
 {
@@ -29,13 +27,12 @@ class Products extends Model
 
     public static function getAllPaginated(int $itemsPerPage = 15)
     {
-
         return self::all()->paginate($itemsPerPage);
     }
 
     private static function search(string $column, string $search)
     {
-        return self::where([$column, 'like', '%' . $search . '%'])->get();
+        return self::where($column, 'like', '%' . $search . '%')->paginate(15);
     }
 
     private static function filterColumnByParam(string $column, string $method, string $param)
@@ -45,15 +42,8 @@ class Products extends Model
 
     private static function getDistinct(array $column)
     {
-        return self::distinct()->get($column);
-        // $query = DB::table('products')->distinct()->select(['manufacturer'])->get();
-
-        // Log::info($query);
-
-        // return $query;
+        return self::distinct()->get();
     }
-
-
 
     public static function filterMgltLessThanParam(string $param)
     {
@@ -78,6 +68,11 @@ class Products extends Model
     public static function searchManufacturer(string $search)
     {
         return self::search('manufacturer', $search);
+    }
+
+    public static function searchStarshipClass(string $search)
+    {
+        return self::search('starship_class', $search);
     }
 
     public static function getDistinctManufacturer()

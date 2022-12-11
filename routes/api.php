@@ -22,9 +22,5 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/user/register', [UserController::class, 'edit']);
 
 // Product
-Route::get('/product/{products}', [ProductController::class, 'index']);
-Route::get('/products', [ProductController::class, 'show']);
-Route::get(
-    '/products/getTypesOfQuery',
-    [ProductController::class, 'getTypesOfQuery']
-);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/getTypesOfQuery', [ProductController::class, 'getTypesOfQuery']);

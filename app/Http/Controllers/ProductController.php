@@ -28,18 +28,30 @@ class ProductController extends Controller
         'Yacht' => 'Iate estelar'
     ];
 
-    public function show(Request $request)
+    public function show(Products $products)
     {
 
 
-        return Products::paginate(15);
+        return response($products, 200);
     }
 
 
-    public function index(Products $products)
+    public function index(Request $request)
     {
         try {
-            return response($products, 200);
+            if (isset($request['model'])) {
+                return response((Products::searchModel($request['model'])), 200);
+            }
+
+            if (isset($request['category'])) {
+                return response((Products::searchStarshipClass($request['category'])), 200);
+            }
+
+            if (isset($request['manufacturer'])) {
+                return response((Products::searchManufacturer($request['manufacturer'])), 200);
+            }
+
+            return response(Products::paginate(15), 200);
         } catch (Exception $e) {
             Log::error($e);
 
@@ -58,7 +70,6 @@ class ProductController extends Controller
             ];
 
             $searches = [
-                'name',
                 'model'
             ];
 
