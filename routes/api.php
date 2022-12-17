@@ -17,10 +17,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// User
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/user/register', [UserController::class, 'edit']);
 
 // Product
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/getTypesOfQuery', [ProductController::class, 'getTypesOfQuery']);
+
+// User
+Route::post('/login', [UserController::class, 'login'])->name('login');
+Route::post('/user/register', [UserController::class, 'store']);
+
+// Authenticated Routes
+Route::middleware('auth:sanctum')->group(function () {
+    // User
+    Route::put('/user/{user}', [UserController::class, 'update']);
+    Route::delete('/user/{user}', [UserController::class, 'destroy']);
+    Route::get('/user/{user}', [UserController::class, 'show']);
+});
