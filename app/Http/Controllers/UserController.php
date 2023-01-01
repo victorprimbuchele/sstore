@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -65,7 +66,7 @@ class UserController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response('Seu e-mail ou senha não estão corretos');
+            return response('Seu e-mail ou senha não estão corretos', 403);
         }
         return $user->createToken($request->header('User-Agent'));
     }
@@ -79,7 +80,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|unique:users|email',
+            'email' => 'required|email',
             'password' => 'required'
         ]);
 
@@ -107,20 +108,12 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
+    public function show()
     {
-        $this->authorize('view', [$user, Auth::user()]);
-
-        Log::info(['controller' => $user->id]);
-
         try {
-            return response($user, 200);
+            Log::info(Auth::user());
+
+            return response(Auth::user(), 200);
         } catch (\Exception $e) {
             Log::error($e);
 
@@ -135,30 +128,22 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserRequest $request)
     {
-        $this->authorize('update', $user);
-
-        $validated = $request->validate([
-            'email' => 'sometimes|unique:users|email',
-            'name' => 'sometimes|min:4|max:65',
-            'password' => 'sometimes',
-            'phone' => 'sometimes|min:10|max:11',
-            'cpf_cnpj' => 'sometimes|min:11|max:14'
-        ]);
+        $user = Auth::user();
 
         try {
-            if ($validated) {
+            $user->update([
+                $request->all(),
+                'password'  => Hash::make($request['name']),
+            ]);
 
-                $user->update($request->all());
+            $response = [
+                'data' => $user,
+                'message' => 'Perfil atualizado com sucesso'
+            ];
 
-                $response = [
-                    'data' => $user,
-                    'message' => 'Perfil atualizado com sucesso'
-                ];
-
-                return response($response, 200);
-            }
+            return response($response, 200);
 
             return response('Não foi possível fazer atualizar o usuário', 422);
         } catch (\Exception $e) {
@@ -174,12 +159,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy()
     {
-        $this->authorize('delete', $user);
-
         try {
-            $user->delete();
+            Auth::user()->delete();
 
             return response('Usuário deletado com sucesso');
         } catch (\Exception $e) {
